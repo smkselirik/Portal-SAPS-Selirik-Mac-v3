@@ -27,55 +27,60 @@
             flex-direction: column;
         }
 
-       /* Header with purely Night Blue and striking abstract golden pattern */
+      /* Header with purely Night Blue, Corporate & Elegant Style */
         header {
             background-color: var(--night-blue);
-            /* Kombinasi garisan geometri emas dan silauan (glow) abstrak */
-            background-image: 
-                linear-gradient(135deg, transparent 15%, rgba(212, 175, 55, 0.5) 20%, rgba(212, 175, 55, 0.1) 22%, transparent 28%),
-                linear-gradient(45deg, transparent 75%, rgba(212, 175, 55, 0.7) 80%, transparent 85%),
-                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.4) 0%, transparent 45%),
-                radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.45) 0%, transparent 50%);
+            /* Kesan spotlight lembut di bahagian tengah atas untuk kedalaman (depth) */
+            background-image: radial-gradient(circle at 50% 0%, #1e2a78 0%, var(--night-blue) 80%);
             color: var(--white);
             text-align: center;
-            padding: 30px 20px;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            padding: 35px 20px 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
             position: relative;
-            overflow: hidden;
-            border-bottom: 4px solid var(--gold); /* Garisan kemasan emas di sempadan bawah */
+            border-bottom: 3px solid var(--gold); /* Garisan emas yang lebih nipis dan kemas */
+        }
+
+        /* Elemen tekstur grid halus (subtle corporate grid) */
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
         }
 
         header img {
-            width: 110px;
+            width: 95px; /* Saiz logo dilaras supaya lebih seimbang */
             height: auto;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             position: relative;
             z-index: 2;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); /* Memberi efek timbul pada logo */
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
         }
 
         header h1 {
-            margin: 0 0 5px;
-            font-size: 1.8rem;
+            margin: 0 0 8px;
+            font-size: 1.6rem;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 2.5px;
             color: var(--gold);
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Teks lebih jelas */
             position: relative;
             z-index: 2;
         }
 
         header .portal-title {
-            margin: 5px 0;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: var(--white);
-            letter-spacing: 1px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 400; /* Font yang lebih nipis untuk nampak profesional */
+            color: #e0e0e0; /* Putih keabu-abuan untuk kontras yang lebih tenang */
+            letter-spacing: 1.5px;
             position: relative;
             z-index: 2;
         }
-
         header img {
             width: 100px;
             height: auto;
