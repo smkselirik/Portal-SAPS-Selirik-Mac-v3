@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Markah Peperiksaan - SMK Selirik</title>
+    <style>
+        /* CSS Styling */
+        :root {
+            --night-blue: #151B54;
+            --gold: #D4AF37;
+            --light-blue-1: #c2e9fb;
+            --light-blue-2: #a1c4fd;
+            --white: #ffffff;
+            --danger: #dc3545;
+            --success: #28a745;
+            --warning: #ffc107;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, var(--light-blue-2), var(--light-blue-1));
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header with purely Night Blue and elegant abstract golden pattern */
+        header {
+            background-color: var(--royal-blue);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
+                repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.05) 0%, rgba(212, 175, 55, 0.05) 2px, transparent 2px, transparent 15px);
+            color: var(--white);
+            padding: 25px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            border-bottom: 4px solid var(--gold);
+            position: relative;
+
+        }
+
+        header img {
+            width: 100px;
+            height: auto;
+        }
+
+        header h1 {
+            margin: 10px 0 5px;
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--gold);
+        }
+
+        header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .container {
+            flex: 1;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: none; /* Hidden by default */
+        }
+
+        .card.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: var(--night-blue);
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary { background: var(--night-blue); color: var(--gold); }
+        .btn-primary:hover { opacity: 0.9; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-danger { background: var(--danger); color: white; }
+        .btn-warning { background: var(--warning); color: #333; }
+        
+        .student-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 10px;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .student-row:last-child { border-bottom: none; }
+
+        .student-name {
+            font-weight: 600;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .mark-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .grade-indicator {
+            font-weight: bold;
+            text-align: center;
+            color: var(--night-blue);
+            background: #f0f0f0;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .th-btn {
+            background: var(--danger);
+            color: white;
+            padding: 8px;
+            font-size: 12px;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        /* Dashboard Styles */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+            font-size: 14px;
+        }
+        th { background-color: var(--night-blue); color: white; }
+
+        footer {
+            background: var(--night-blue);
+            color: var(--white);
+            text-align: center;
+            padding: 15px;
+            font-size: 14px;
+            margin-top: auto;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 600px) {
+            .student-row {
+                grid-template-columns: 1fr;
+                gap: 5px;
+                background: #f9f9f9;
+                border-radius: 8px;
+                margin-bottom: 10px;
+                padding: 15px;
+                border: 1px solid #ddd;
+            }
+            .grid-inputs {
+                display: grid;
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 10px;
+            }
+        }
+        
+        .loader {
+            text-align: center;
+            font-weight: bold;
+            color: var(--night-blue);
+            display: none;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="https://i.ibb.co/VYSKMXf1/Logo-Selirik.png" alt="Logo SMK Selirik">
+        <h1>SMK SELIRIK, KAPIT</h1>
+        <p>Peperiksaan Pertengahan 1 (Mac) - Tahun 2026</p>
+    </header>
+
+    <div class="container">
+        <div id="login-section" class="card active">
+            <h3 style="color: var(--night-blue); text-align: center;">Log Masuk Guru</h3>
+            <div class="form-group">
+                <label>No. Kad Pengenalan / ID</label>
+                <input type="text" id="teacher-id" placeholder="Masukkan ID (Tanpa sengkang)">
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="login()">Log Masuk</button>
+        </div>
+
+        <div id="selection-section" class="card">
+            <h3 id="welcome-msg" style="color: var(--night-blue);"></h3>
+            <div class="form-group">
+                <label>Pilih Subjek & Kelas</label>
+                <select id="subject-class-select"></select>
+            </div>
+            <button class="btn-primary" style="width: 100%;" onclick="loadStudents()">Seterusnya</button>
+            <div class="action-buttons">
+                <button class="btn-warning" onclick="showDashboard()">Semak Rekod</button>
+                <button class="btn-danger" onclick="logout()">Keluar</button>
+            </div>
+        </div>
+
+        <div id="entry-section" class="card">
+            <h3 id="current-class-title" style="color: var(--night-blue); border-bottom: 2px solid var(--gold); padding-bottom: 10px;"></h3>
+            <div class="loader" id="loading-students">Sedang memuat turun data pelajar...</div>
+            <div id="student-list"></div>
+            
+            <div class="action-buttons">
+                <button class="btn-warning" onclick="goBack('selection-section')">Kembali</button>
+                <button class="btn-success" onclick="saveAndSend()">Simpan & Hantar</button>
+                <button class="btn-primary" onclick="showDashboard()">Semak Rekod</button>
+                <button class="btn-danger" onclick="logout()">Keluar</button>
+            </div>
+        </div>
+
+        <div id="dashboard-section" class="card">
+            <h3 style="color: var(--night-blue);">Rekod Markah (Local Storage)</h3>
+            <div class="table-responsive">
+                <table id="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Kelas</th>
+                            <th>Subjek</th>
+                            <th>Markah</th>
+                            <th>Gred</th>
+                            <th>Tindakan</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div class="action-buttons">
+                <button class="btn-warning" onclick="goBackToPrevious()">Kembali</button>
+                <button class="btn-danger" onclick="logout()">Keluar</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Hakcipta terpelihara NDJE@Selirik, Kapit 2026
+    </footer>
+
+    <script>
+        // 1. Data URLs & Mappings
+        const CSV_LINKS = {
+            1: "https://docs.google.com/spreadsheets/d/e/2PACX-1vS9ngcL37KMX8ZDsGKomo7Lv6yowNqFdcWciJuvS1UkUU6aFHI_VKuFDLP1d0fKtMlXTW8APMYD38xZ/pub?gid=1419213935&single=true&output=csv",
+            2: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSD6QwXil_0_gA0OBb2t82FneuCt68Sp7P9-He4zyBPEoaVHkJent8hiCSFPa33F-AEmR9BgeEogpt-/pub?gid=1419213935&single=true&output=csv",
+            3: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQg40cTCNS7MVyZVA3-8sZkbNtVT_Db9abxz6xhv1ccZ5ZksWIy0qyn8y30lqxG9G9YN1TOMBXF7WCY/pub?gid=1419213935&single=true&output=csv",
+            4: "https://docs.google.com/spreadsheets/d/e/2PACX-1vR831uDWcPfxf9zOj-mekolv_DMkdsYRMdVsxoLcKqwL88z-tetvP57ti5wB5M2dYIXYVZf9eX7R6Q8/pub?gid=1615224868&single=true&output=csv",
+            5: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRq9lzeK5sombRvA2WRgEYGygUdZwEfifZHVy4IMZiRD7c-yll60qkA4pXeBBocqJsRV6GpM1uazU_B/pub?gid=1615224868&single=true&output=csv"
+        };
+
+        const APPS_SCRIPT_LINKS = {
+            1: "https://script.google.com/macros/s/AKfycbzI4uyIyKd5O0do0KQRbdjuzay3OMUBpN0EuJCOtbcAI4dAmh0Fj_n_CTsCX9mwdeNsEg/exec",
+            2: "https://script.google.com/macros/s/AKfycbw0BakCGDqNheCPyzdqrstH8jM0Je3D1fM2oJTB0odH5UIAO08GNdOSIqWMK6e1ZQmL/exec",
+            3: "https://script.google.com/macros/s/AKfycbylkJ6fpiWtyTdsdtdZP5J5t4uAWSiPHWVMguWlUu6hNCIPMvyEUyk2hLWn4SlFts0A/exec",
+            4: "https://script.google.com/macros/s/AKfycbztn63Bhbjl6EKwvVFadcYNY3jzA0Nuty-_veEYQBkLenytXxQWZY5h7GweO3maDLn0/exec",
+            5: "https://script.google.com/macros/s/AKfycbxg5tGuWQ6U8Aou1tG-m5PXWEyfbfcq_maaL_W8awU35NiBf3v-7c8peqQMeBCIqIdUsQ/exec"
+        };
+
+        // Pemetaan Kolum
+        const COL_MAP_F45 = {
+            "BAHASA MELAYU": "E", "BAHASA INGGERIS": "I", "SEJARAH": "G", "MATEMATIK": "K", 
+            "PENDIDIKAN MORAL": "M", "PENDIDIKAN ISLAM": "O", "SAINS": "Q", "SAINS KOMPUTER": "AI",
+            "REKA CIPTA": "W", "PENDIDIKAN SENI VISUAL": "S", "KIMPALAN ARKA & GAS": "AK", 
+            "KIMPALAN ARKA DAN GAS": "AK", "BIOLOGY": "AE", "PHYSICS": "AA", "CHEMISTRY": "AC", 
+            "ADDITIONAL MATHEMATICS": "AG", "BAHASA IBAN": "U", "PENGAJIAN PENIAGAAN": "Y", 
+            "PENDIDIKAN JASMANI & KESIHATAN": "BK", "PJK": "BK"
+        };
+
+        const COL_MAP_F13 = {
+            "BAHASA MELAYU": "E", "BAHASA INGGERIS": "G", "SEJARAH": "K", "MATEMATIK": "I",
+            "MATHEMATICS": "I", "PENDIDIKAN MORAL": "S", "PENDIDIKAN ISLAM": "U", "SAINS": "M", 
+            "SCIENCE": "M", "ASAS SAINS KOMPUTER": "Y", "REKA BENTUK & TEKNOLOGI": "W", 
+            "PENDIDIKAN SENI VISUAL": "AA", "GEOGRAFI": "O", "BAHASA IBAN": "Q", 
+            "PENDIDIKAN JASMANI & KESIHATAN": "AO", "PJK": "AO"
+        };
+
+        // 2. Data Guru
+        const TEACHERS = {
+            "801025135463": { name: "KONG KAH SUI", subjects: ["PENDIDIKAN JASMANI & KESIHATAN 4SN", "PENDIDIKAN JASMANI & KESIHATAN 4ST1", "PENDIDIKAN JASMANI & KESIHATAN 4A2"] },
+            "700714135597": { name: "KARENO ANAK LAMPONG", subjects: ["PENDIDIKAN MORAL 3A6", "PENDIDIKAN MORAL 3A11"] },
+            "790313135029": { name: "JIMMY ANAK ANGGA", subjects: ["PENDIDIKAN MORAL 3A2", "PENDIDIKAN MORAL 3A7", "PENDIDIKAN MORAL 3A9"] },
+            "710414135236": { name: "LUYA ANAK UNSA", subjects: ["BAHASA MELAYU 3A1", "BAHASA MELAYU 3A8"] },
+            "800718135867": { name: "KONG CHUNG SHING", subjects: ["SAINS 4ST3", "SAINS 4A4", "REKA BENTUK & TEKNOLOGI 3A11"] },
+            "751207135568": { name: "TIONG SIEW HOON", subjects: ["MATEMATIK 5ST2", "MATEMATIK 5ST3", "MATEMATIK 5A2"] },
+            "850805135684": { name: "NATALIE DAMIE ANAK JACOB ENGGAH", subjects: ["BAHASA INGGERIS 4ST1", "BAHASA INGGERIS 4A2", "BAHASA INGGERIS 4A4", "BAHASA INGGERIS 5SN"] },
+            "800530125085": { name: "ARNOLD JUNIOR AUGUSTINE", subjects: ["BAHASA INGGERIS 4SN", "BAHASA INGGERIS 5ST1", "BAHASA INGGERIS 5KAG", "BAHASA INGGERIS 5A1"] },
+            "860129525618": { name: "RUNA ANAK SANGGONG", subjects: ["BAHASA INGGERIS 4ST2", "BAHASA INGGERIS 4KAG", "BAHASA INGGERIS 5ST2", "BAHASA INGGERIS 5A3"] },
+            "981014135899": { name: "GEORGE CHONG", subjects: ["BAHASA INGGERIS 4A3", "BAHASA INGGERIS 4ST3", "BAHASA INGGERIS 5A2", "BAHASA INGGERIS 3A1"] },
+            "980627135299": { name: "DARREN GILBERT ANAK KOH", subjects: ["BAHASA INGGERIS 4A1", "BAHASA INGGERIS 5ST3", "BAHASA INGGERIS 5A4", "BAHASA INGGERIS 3A2", "BAHASA INGGERIS 3A8"] },
+            "860805526983": { name: "GRAY ANAK JOWIM@JOWIN", subjects: ["SEJARAH 4ST2", "SEJARAH 4A3", "SEJARAH 4A4", "SEJARAH 5KAG"] },
+            "911129136097": { name: "AQKMAL HAZIM BIN MUD", subjects: ["SEJARAH 4ST3", "SEJARAH 4A2", "SEJARAH 5SN", "SEJARAH 5A1"] },
+            "871226525496": { name: "KAREN MAWAS ANAK ARAH", subjects: ["SEJARAH 4ST1", "SEJARAH 4KAG", "SEJARAH 4A1", "SEJARAH 5ST2", "SEJARAH 5ST3", "SEJARAH 5A4"] },
+            "900620137707": { name: "YONG KASI SIONG", subjects: ["SEJARAH 4SN", "SEJARAH 3A2", "SEJARAH 3A5", "SEJARAH 3A6", "SEJARAH 3A7", "SEJARAH 3A9", "SEJARAH 3A10"] },
+            "861122135080": { name: "ALEXANRA ANAK ANDREW KANA", subjects: ["ADDITIONAL MATHEMATICS 4SN", "MATEMATIK 5SN", "MATEMATIK 5ST1", "MATEMATIK 5A3"] },
+            "920312135206": { name: "ANDREA AK RIWIK", subjects: ["SAINS KOMPUTER 4SN", "MATEMATIK 3A1", "MATEMATIK 3A9"] },
+            "840927135480": { name: "AMMY CYNTHIA ANAK ACHAN", subjects: ["SAINS 3A1", "SAINS 3A5", "SAINS 3A8", "SAINS 3A11"] },
+            "961130135644": { name: "ATHIASIA ANAK ENJANG", subjects: ["BAHASA MELAYU 4A1", "BAHASA MELAYU 4A2", "BAHASA MELAYU 5ST1"] },
+            "970825016670": { name: "BRENDA AIMA ANAK JOSHUA MARIYAM", subjects: ["SAINS 4KAG", "SAINS 4ST1", "BIOLOGY 4SN", "SAINS 5A4"] },
+            "860116525619": { name: "MOHD CABERINI BIN LINANG", subjects: ["PENDIDIKAN SENI VISUAL 4A1", "PENDIDIKAN SENI VISUAL 4A3", "PENDIDIKAN SENI VISUAL 5ST3", "PENDIDIKAN SENI VISUAL 5A2"] },
+            "880504525432": { name: "CECELIA ANAK JANES", subjects: ["PENGAJIAN PENIAGAAN 4ST1", "PENGAJIAN PENIAGAAN 5ST1", "GEOGRAFI 3A1", "GEOGRAFI 3A2", "GEOGRAFI 3A4", "GEOGRAFI 3A6", "GEOGRAFI 3A8"] },
+            "920317036207": { name: "CHE MOHD UDAIY BIN CHE ABDUL HADI", subjects: ["PHYSICS 4SN", "SAINS 3A3", "SAINS 3A7", "SAINS 3A9"] },
+            "930112135956": { name: "CHRISTINA ADANG ANAK RAMA", subjects: ["BAHASA MELAYU 4SN", "BAHASA MELAYU 4A4", "BAHASA MELAYU 5KAG"] },
+            "910722136085": { name: "DESMOND ANAK LINGGI", subjects: ["BAHASA MELAYU 4KAG", "BAHASA MELAYU 5SN", "BAHASA MELAYU 5A1"] },
+            "840607135430": { name: "DIANA ANAK LIMBI", subjects: ["SAINS 4A1", "SAINS 4ST2", "SAINS 5ST2", "SAINS 5A1"] },
+            "990902135672": { name: "ELLLSIE ANAK IRIN", subjects: ["REKA CIPTA 4ST2", "REKA CIPTA 4ST3", "REKA BENTUK & TEKNOLOGI 3A8", "REKA BENTUK & TEKNOLOGI 3A9"] },
+            "900811136926": { name: "ENDON ANAK BAKAR", subjects: ["PENDIDIKAN MORAL 4ST1", "PENDIDIKAN MORAL 4A1", "PENDIDIKAN MORAL 4A4", "PENDIDIKAN MORAL 5SN", "PENDIDIKAN MORAL 5A2", "PENDIDIKAN MORAL 5KAG"] },
+            "010227130467": { name: "GONZALES ANAK ABING", subjects: ["MATEMATIK 4SN", "MATEMATIK 4ST3", "MATEMATIK 4A1", "MATEMATIK 4A4", "MATEMATIK 4KAG"] },
+            "940628135710": { name: "JACINTA ANAK BUDIT", subjects: ["PHYSICS 5SN", "SAINS 4A2", "SAINS 5ST1", "SAINS 5A3"] },
+            "980605135925": { name: "JACKSON LEO ANAK SEBA", subjects: ["SEJARAH 3A1", "SEJARAH 3A3", "SEJARAH 5ST1", "SEJARAH 5A2", "BAHASA IBAN 3A6", "BAHASA IBAN 3A11"] },
+            "900219137495": { name: "KENNY ANAK TAWAI", subjects: ["BAHASA MELAYU 4ST3", "BAHASA MELAYU 5A3", "BAHASA MELAYU 5A4"] },
+            "990427135576": { name: "LORRAINNA SIERRA ANAK MEGONG", subjects: ["BAHASA INGGERIS 3A3", "BAHASA INGGERIS 3A5", "BAHASA INGGERIS 3A7", "BAHASA INGGERIS 3A9", "BAHASA INGGERIS 3A11"] },
+            "690811135322": { name: "MATTHEW ANAK ENTERING", subjects: ["PENDIDIKAN MORAL 5ST1", "PENDIDIKAN MORAL 5ST3", "PENDIDIKAN MORAL 5A4", "BAHASA IBAN 3A4", "BAHASA IBAN 3A7", "BAHASA IBAN 3A8", "BAHASA IBAN 3A10"] },
+            "981023135612": { name: "MAUREEN ANAK SAIT", subjects: ["BAHASA IBAN 4ST3", "BAHASA IBAN 3A1", "BAHASA IBAN 3A3", "BAHASA IBAN 3A5", "BAHASA IBAN 3A9", "BAHASA MELAYU 3A4"] },
+            "920826136695": { name: "MOHAMAD ZAID BIN ZAIDI", subjects: ["KIMPALAN ARKA & GAS 4KAG", "KIMPALAN ARKA & GAS 5KAG"] },
+            "960603135683": { name: "MOHAMMAD ZULKAMAL BIN DAHLAN", subjects: ["REKA CIPTA 5ST1", "REKA CIPTA 5ST3", "REKA BENTUK & TEKNOLOGI 3A4", "REKA BENTUK & TEKNOLOGI 3A10"] },
+            "961018035889": { name: "MOHAMAD FAZREEN BIN ZAINUDIN", subjects: ["PENDIDIKAN JASMANI & KESIHATAN 3A2", "PENDIDIKAN JASMANI & KESIHATAN 3A3", "PENDIDIKAN JASMANI & KESIHATAN 3A5", "PENDIDIKAN JASMANI & KESIHATAN 3A10", "PENDIDIKAN JASMANI & KESIHATAN 4ST2", "PENDIDIKAN JASMANI & KESIHATAN 4A4", "PENDIDIKAN JASMANI & KESIHATAN 5SN", "PENDIDIKAN JASMANI & KESIHATAN 5A2"] },
+            "950905036147": { name: "MUHAMMAD HANIF IQWAN BIN ABD AZIZ", subjects: ["SAINS KOMPUTER 5SN", "MATEMATIK 3A3", "MATEMATIK 3A5", "MATEMATIK 3A11"] },
+            "790311135404": { name: "NORA ANAK ENGKOL", subjects: ["BAHASA MELAYU 4ST2", "BAHASA MELAYU 5ST3", "BAHASA MELAYU 5A2"] },
+            "980827135058": { name: "NURHAZIQAH BINTI AMBRI", subjects: ["BAHASA MELAYU 3A3", "BAHASA MELAYU 3A5", "BAHASA MELAYU 3A7", "BAHASA MELAYU 3A11"] },
+            "960408135290": { name: "NURSYAMIERA BINTI MAJAIE", subjects: ["MATEMATIK 3A4", "MATEMATIK 3A6", "MATEMATIK 3A7", "MATEMATIK 3A8", "MATEMATIK 3A10"] },
+            "930403135198": { name: "NURUL SAMIZA BT ABANG", subjects: ["MATEMATIK 3A2", "MATEMATIK 4ST1", "MATEMATIK 4A2", "MATEMATIK 4A3"] },
+            "840910135126": { name: "SANTI ANAK THOMAS NANANG", subjects: ["BAHASA IBAN 4ST2", "BAHASA IBAN 5ST2", "BAHASA INGGERIS 3A4", "BAHASA INGGERIS 3A6", "BAHASA INGGERIS 3A10"] },
+            "911010136428": { name: "SHU SEO CHENG", subjects: ["PENDIDIKAN JASMANI & KESIHATAN 3A1", "PENDIDIKAN JASMANI & KESIHATAN 3A4", "PENDIDIKAN JASMANI & KESIHATAN 3A6", "PENDIDIKAN JASMANI & KESIHATAN 3A7", "PENDIDIKAN JASMANI & KESIHATAN 3A8", "PENDIDIKAN JASMANI & KESIHATAN 3A9", "PENDIDIKAN JASMANI & KESIHATAN 3A11"] },
+            "940318135694": { name: "SIA KANG YEE", subjects: ["CHEMISTRY 4SN", "CHEMISTRY 5SN", "SAINS 5ST3"] },
+            "910706135840": { name: "SITI KHADIJAH BT JAMALUDIN", subjects: ["PENDIDIKAN ISLAM 3A5", "PENDIDIKAN ISLAM 4SN", "PENDIDIKAN ISLAM 4ST1", "PENDIDIKAN ISLAM 4ST2", "PENDIDIKAN ISLAM 5SN", "PENDIDIKAN ISLAM 5ST1", "PENDIDIKAN ISLAM 5A1", "PENDIDIKAN MORAL 3A3", "PENDIDIKAN MORAL 3A8", "PENDIDIKAN MORAL 3A10"] },
+            "960830125354": { name: "SITI NOR LIYANA BINTI MOHD TASRIB", subjects: ["SAINS 3A2", "SAINS 3A4", "SAINS 3A6", "SAINS 3A10"] },
+            "941126135627": { name: "STANLEY ANAK TUNGKU", subjects: ["PENDIDIKAN SENI VISUAL 4A2", "PENDIDIKAN SENI VISUAL 4A4", "PENDIDIKAN SENI VISUAL 5A1", "PENDIDIKAN SENI VISUAL 5A3"] },
+            "000628130602": { name: "STEPHANIE ANAK HARWELL", subjects: ["PENDIDIKAN JASMANI & KESIHATAN 4A1", "PENDIDIKAN JASMANI & KESIHATAN 4KAG", "PENDIDIKAN MORAL 4ST3", "PENDIDIKAN MORAL 4A2", "PENDIIDKAN MORAL 4A3", "PENDIDIKAN MORAL 3A1", "PENDIDIKAN MORAL 3A4", "PENDIDIKAN MORAL 3A5"] },
+            "910306135868": { name: "STEPHANIE ANAK JUKY", subjects: ["SAINS 4A3", "SAINS 5KAG", "SAINS 5A2", "BIOLOGY 5SN"] },
+            "870404527095": { name: "SYLVESTER ANAK ANTHONY GONG", subjects: ["REKA CIPTA 4ST1", "REKA CIPTA 5ST2", "PENDIDIKAN JASMANI & KESIHATAN 5A1", "PENDIDIKAN JASMANI & KESIHATAN 5A4", "GEOGRAFI 3A9", "GEOGRAFI 3A11"] },
+            "910615135984": { name: "TERRY ANAK JAAPAR", subjects: ["REKA BENTUK & TEKNOLOGI 3A2", "REKA BENTUK & TEKNOLOGI 3A3", "REKA BENTUK & TEKNOLOGI 3A5", "REKA BENTUK & TEKNOLOGI 3A6", "REKA BENTUK & TEKNOLOGI 3A7", "PENDIDIKAN SENI VISUAL 3A1", "PENDIDIKAN SENI VISUAL 3A4", "PENDIDIKAN SENI VISUAL 3A8", "PENDIDIKAN SENI VISUAL 3A9"] },
+            "930903136162": { name: "TRACY DIANALEE ANAK MERANG", subjects: ["PENDIDIKAN MORAL 4SN", "PENDIDIKAN MORAL 4ST2", "PENDIDIKAN JASMANI & KESIHATAN 4ST3", "PENDIDIKAN JASMANI & KESIHATAN 4A3", "PENDIDIKAN MORAL 5ST2", "PENDIDIKAN MORAL 5A1", "PENDIDIKAN MORAL 5A3"] },
+            "730417055045": { name: "WONG CHEE LOONG", subjects: ["ADDITIONAL MATHEMATICS 5SN", "MATEMATIK 4ST2", "MATEMATIK 5KAG", "MATEMATIK 5A1", "MATEMATIK 5A4"] },
+            "920820135958": { name: "WONG CHU SING", subjects: ["BAHASA MELAYU 4ST1", "BAHASA MELAYU 4A3", "BAHASA MELAYU 5ST2"] },
+            "900520138489": { name: "BESI ANAK NELSON MUNTAT", subjects: ["GEOGRAFI 3A3", "GEOGRAFI 3A5", "GEOGRAFI 3A7", "GEOGRAFI 3A10", "SEJARAH 3A4", "SEJARAH 3A8", "SEJARAH 3A11"] },
+            "990921136208": { name: "AMANDA FUNG", subjects: ["SEJARAH 1A1", "SEJARAH 1A3", "SEJARAH 1A5", "SEJARAH 1A8", "SEJARAH 1A10", "SEJARAH 2A4", "SEJARAH 2A5", "SEJARAH 2A10"] },
+            "790603135182": { name: "CATHERINE TING LEH MEE", subjects: ["SCIENCE 1A1", "SAINS 1A7"] },
+            "870709135586": { name: "ANNA SELAKE", subjects: ["GEOGRAFI 1A2", "GEOGRAFI 1A10", "GEOGRAFI 1A11", "GEOGRAFI 2A1", "GEOGRAFI 2A3", "GEOGRAFI 2A4", "GEOGRAFI 2A6", "GEOGRAFI 2A7", "GEOGRAFI 2A9", "GEOGRAFI 2A11"] },
+            "900217135285": { name: "AUDIE PETER ANAK JOACHIM", subjects: ["BAHASA INGGERIS 1A4", "BAHASA INGGERIS 1A9", "BAHASA INGGERIS 2A7", "BAHASA INGGERIS 2A10", "BAHASA INGGERIS 2A11"] },
+            "960820126054": { name: "BELLA ALFEYANA BOBBY", subjects: ["BAHASA INGGERIS 1A2", "BAHASA INGGERIS 1A8", "BAHASA INGGERIS 2A2", "BAHASA INGGERIS 2A3", "BAHASA INGGERIS 2A8"] },
+            "960707136410": { name: "CHRISTINA GADING ANAK MERING", subjects: ["BAHASA INGGERIS 1A1", "BAHASA INGGERIS 1A5", "BAHASA INGGERIS 1A10", "BAHASA IBAN 1A9", "BAHASA IBAN 1A11", "BAHASA IBAN 2A6", "BAHASA IBAN 2A11"] },
+            "990727135738": { name: "DABYANA ANAK STEPHEN", subjects: ["GEOGRAFI 1A1", "GEOGRAFI 1A3", "GEOGRAFI 1A6", "GEOGRAFI 1A8", "BAHASA IBAN 2A1", "BAHASA IBAN 2A2", "BAHASA IBAN 2A7", "BAHASA IBAN 2A8", "BAHASA IBAN 2A10"] },
+            "970106135796": { name: "EVERA SINDA ANAK JAMES JATAN", subjects: ["ASAS SAINS KOMPUTER 1A1", "ASAS SAINS KOMPUTER 2A1", "BAHASA IBAN 1A2", "BAHASA IBAN 1A5", "BAHASA IBAN 1A6", "BAHASA IBAN 1A7", "BAHASA IBAN 1A8", "BAHASA IBAN 1A10"] },
+            "900601135036": { name: "FLOREESE BINTI MICHAEL", subjects: ["PENDIDIKAN MORAL 1A5", "PENDIDIKAN MORAL 1A7", "PENDIDIKAN MORAL 1A8", "PENDIDIKAN MORAL 1A10", "PENDIDIKAN MORAL 1A11"] },
+            "921011135725": { name: "FRANKLIN ANAK BALA", subjects: ["SAINS 2A5", "SAINS 2A6", "SAINS 2A7", "SAINS 2A9", "SAINS 2A11"] },
+            "900901136276": { name: "JACKLINE JAWAI ANAK BAYANG", subjects: ["BAHASA MELAYU 2A2", "BAHASA MELAYU 2A5", "BAHASA MELAYU 2A7", "BAHASA MELAYU 2A10"] },
+            "910425135588": { name: "JESSICA ANAK KANA", subjects: ["BAHASA IBAN 1A1", "BAHASA IBAN 1A3", "BAHASA IBAN 1A4", "BAHASA IBAN 2A3", "BAHASA IBAN 2A4", "BAHASA IBAN 2A5", "BAHASA IBAN 2A9", "SEJARAH 1A7"] },
+            "970514135998": { name: "JETNNA ANAK ANGGA", subjects: ["BAHASA MELAYU 1A2", "BAHASA MELAYU 1A6", "BAHASA MELAYU 1A8", "GEOGRAFI 1A4", "GEOGRAFI 1A9"] },
+            "961202135572": { name: "MELISSA BINTI MANDE", subjects: ["MATEMATIK 1A2", "MATEMATIK 1A10", "MATEMATIK 2A3", "MATEMATIK 2A7", "MATEMATIK 2A10"] },
+            "940129136671": { name: "MOHD FARIDH REZZA BIN MOHD SABLI", subjects: ["BAHASA INGGERIS 1A6", "BAHASA INGGERIS 2A1", "BAHASA INGGERIS 2A4", "BAHASA INGGERIS 2A5", "BAHASA INGGERIS 2A9"] },
+            "940708126945": { name: "MOHD. JAIEROL BIN JUMIN", subjects: ["MATEMATIK 1A3", "MATEMATIK 2A6", "MATEMATIK 2A9", "MATEMATIK 2A11", "PENDIDIKAN JASMANI & KESIHATAN 1A5"] },
+            "970809135127": { name: "MOHD. FARHAN FASSIRAN BIN SELEMAN", subjects: ["BAHASA MELAYU 1A4", "PENDIDIKAN JASMANI & KESIHATAN 1A1", "PENDIDIKAN JASMANI & KESIHATAN 1A2", "PENDIDIKAN JASMANI & KESIHATAN 2A6", "PENDIDIKAN JASMANI & KESIHATAN 2A8", "PENDIDIKAN JASMANI & KESIHATAN 2A11"] },
+            "980730115595": { name: "MUHAMMAD SUAIDI BIN NOOR AZMI", subjects: ["PENDIDIKAN JASMANI & KESIHATAN 1A6", "PENDIDIKAN JASMANI & KESIHATAN 2A1", "PENDIDIKAN JASMANI & KESIHATAN 2A2", "PENDIDIKAN JASMANI & KESIHATAN 2A4", "PENDIDIKAN JASMANI & KESIHATAN 2A5", "PENDIDIKAN JASMANI & KESIHATAN 2A7", "PENDIDIKAN JASMANI & KESIHATAN 2A9", "PENDIDIKAN JASMANI & KESIHATAN 2A10"] },
+            "960729135275": { name: "MUHD FAIZ BIN ISMAIL", subjects: ["REKA BENTUK & TEKNOLOGI 1A3", "REKA BENTUK & TEKNOLOGI 1A5", "REKA BENTUK & TEKNOLOGI 1A7", "REKA BENTUK & TEKNOLOGI 1A8", "REKA BENTUK & TEKNOLOGI 1A10", "REKA BENTUK & TEKNOLOGI 1A11", "PENDIDIKAN SENI VISUAL 2A10", "PENDIDIKAN SENI VISUAL 2A11"] },
+            "940110145789": { name: "MUHAMMAD SAIFUL BIN NORIZAN", subjects: ["REKA BENTUK & TEKNOLOGI 1A2", "REKA BENTUK & TEKNOLOGI 1A6", "REKA BENTUK & TEKNOLOGI 1A9", "REKA BENTUK & TEKNOLOGI 2A4", "REKA BENTUK & TEKNOLOGI 2A6", "REKA BENTUK & TEKNOLOGI 2A10", "PENDIDIKAN SENI VISUAL 1A1", "PENDIDIKAN SENI VISUAL 1A4", "PENDIDIKAN SENI VISUAL 1A5"] },
+            "861027526673": { name: "NELSON ANAK GEORGE", subjects: ["SAINS 2A2", "SAINS 2A3", "SAINS 2A8"] },
+            "990507135656": { name: "NORSYAZWANI BINT SALAINI", subjects: ["SAINS 1A2", "SAINS 1A4", "SAINS 1A5", "SAINS 1A8", "SAINS 1A9", "SAINS 2A1"] },
+            "971103085054": { name: "NUR ATHIRAH BINTI MD NOR", subjects: ["MATHEMATICS 1A1", "MATEMATIK 1A4", "MATEMATIK 1A8", "MATEMATIK 2A2", "MATEMATIK 2A5"] },
+            "00072130268": { name: "NUR ELLYSHA BINTI NUR MUSWARIE", subjects: ["SAINS 1A3", "SAINS 1A6", "SAINS 1A10", "SAINS 1A11", "SAINS 2A4", "SAINS 2A10"] },
+            "950630135444": { name: "NUR SHAHIRAH BINTI YAKUP", subjects: ["REKA BENTUK & TEKNOLOGI 2A2", "REKA BENTUK & TEKNOLOGI 2A3", "REKA BENTUK & TEKNOLOGI 2A5", "REKA BENTUK & TEKNOLOGI 2A7", "REKA BENTUK & TEKNOLOGI 2A9", "REKA BENTUK & TEKNOLOGI 2A11", "PENDIDIKAN MORAL 2A5"] },
+            "971222135536": { name: "PRISCHILLA ANAK KIROK", subjects: ["SEJARAH 1A2", "SEJARAH 2A1", "SEJARAH 2A3", "SEJARAH 2A6", "SEJARAH 2A9", "SEJARAH 2A11", "BAHASA MELAYU 1A5"] },
+            "940628125280": { name: "ROSS MONICA AK DAVID", subjects: ["PENDIDIKAN MORAL 1A1", "PENDIDIKAN MORAL 1A4", "PENDIDIKAN MORAL 1A9", "PENDIDIKAN MORAL 2A1", "PENDIDIKAN MORAL 2A2", "PENDIDIKAN MORAL 2A7", "PENDIDIKAN MORAL 2A9", "PENDIDIKAN MORAL 2A10"] },
+            "000923131026": { name: "ROWENA EMPINA ANAK MAWAT", subjects: ["SEJARAH 1A4", "SEJARAH 1A6", "SEJARAH 1A11", "SEJARAH 2A2", "SEJARAH 2A4", "SEJARAH 2A7", "SEJARAH 2A8"] },
+            "920915135918": { name: "SAIDAH BINTI MOHD JUNAIDI", subjects: ["PENDIDIKAN SENI VISUAL 1A2", "PENDIDIKAN SENI VISUAL 1A6", "PENDIDIKAN SENI VISUAL 1A7", "PENDIDIKAN SENI VISUAL 1A8", "PENDIDIKAN SENI VISUAL 1A9", "PENDIDIKAN SENI VISUAL 1A10", "PENDIDIKAN SENI VISUAL 1A11", "PENDIDIKAN SENI VISUAL 2A1", "PENDIDIKAN SENI VISUAL 2A2", "PENDIDIKAN SENI VISUAL 2A3", "PENDIDIKAN SENI VISUAL 2A4", "PENDIDIKAN SENI VISUAL 2A5", "PENDIDIKAN SENI VISUAL 2A6", "PENDIDIKAN SENI VISUAL 2A7", "PENDIDIKAN SENI VISUAL 2A8", "PENDIDIKAN SENI VISUAL 2A9"] },
+            "010707131346": { name: "STEPHENA RINNIT ANAK SYAHDAN@LEMBANG", subjects: ["BAHASA MELAYU 1A3", "BAHASA MELAYU 1A7", "BAHASA MELAYU 1A9", "BAHASA MELAYU 1A10"] },
+            "910204135752": { name: "THANNIE BINTI BETTY", subjects: ["MATEMATIK 1A6", "MATEMATIK 1A9", "MATHEMATICS 2A1", "MATEMATIK 2A4"] },
+            "961007115461": { name: "MUHAMMAD AIMAN BIN RAZALI", subjects: ["PENDIDIKAN ISLAM 1A1", "PENDIDIKAN ISLAM 1A5", "PENDIDIKAN ISLAM 2A1", "PENDIDIKAN ISLAM 2A5", "PENDIDIKAN MORAL 1A3", "PENDIDIKAN MORAL 2A8"] },
+            "000627130838": { name: "VANESSA ANAK PUTEH", subjects: ["BAHASA INGGERIS 1A3", "BAHASA INGGERIS 1A9", "BAHASA INGGERIS 1A11", "BAHASA INGGERIS 2A6", "SEJARAH 1A9"] },
+            "940202035712": { name: "WAN NOOR ADUNI BINTI WAN ABDUL KARIM", subjects: ["PENDIDIKAN MORAL 1A2", "PENDIDIKAN MORAL 1A6", "PENDIDIKAN MORAL 2A3", "PENDIDIKAN MORAL 2A5", "PENDIDIKAN JASMANI & KESIHATAN 1A3", "PENDIDIKAN JASMANI & KESIHATAN 1A7", "PENDIDIKAN JASMANI & KESIHATAN 1A11"] },
+            "960825855029": { name: "MOHD NUKMAN HAFIZ BIN ABD LATIF", subjects: ["BAHASA MELAYU 1A1", "BAHASA MELAYU 1A11", "BAHASA MELAYU 2A6", "BAHASA MELAYU 2A9"] },
+            "980623135902": { name: "JASCYNTHA SIMBAH ANAK JANIN", subjects: ["GEOGRAFI 1A5", "GEOGRAFI 1A7", "GEOGRAFI 2A2", "GEOGRAFI 2A5", "GEOGRAFI 2A8", "GEOGRAFI 2A10", "PENDIDIKAN JASMANI & KESIHATAN 1A4", "PENDIDIKAN JASMANI & KESIHATAN 1A8", "PENDIDIKAN JASMANI & KESIHATAN 1A9"] },
+            "970927036787": { name: "MUHAMMAD BADRUL AMIN BIN AHMAD FUAD", subjects: ["MATEMATIK 1A5", "MATEMATIK 1A7", "MATEMATIK 1A11", "MATEMATIK 2A8", "PENDIDIKAN JASMANI & KESIHATAN 1A10"] },
+            "010220131555": { name: "YUSRY MORRIS ANAK ALBERT NGGIL", subjects: ["BAHASA MELAYU 2A1", "BAHASA MELAYU 2A3", "BAHASA MELAYU 2A8", "BAHASA MELAYU 2A11"] }
+        };
+
+        // Variables
+        let currentTeacher = null;
+        let selectedClassSub = "";
+        let currentStudents = [];
+        let prevSection = "login-section";
+
+        // Utilities
+        function showSection(id) {
+            document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function goBack(id) {
+            showSection(id);
+        }
+
+        function goBackToPrevious() {
+            showSection(prevSection);
+        }
+
+        // Logic Functions
+        function login() {
+            const id = document.getElementById('teacher-id').value.trim();
+            if(TEACHERS[id]) {
+                currentTeacher = TEACHERS[id];
+                document.getElementById('welcome-msg').innerText = `Selamat Datang, ${currentTeacher.name}`;
+                
+                const select = document.getElementById('subject-class-select');
+                select.innerHTML = "";
+                currentTeacher.subjects.forEach(sub => {
+                    let opt = document.createElement('option');
+                    opt.value = sub;
+                    opt.innerText = sub;
+                    select.appendChild(opt);
+                });
+                
+                showSection('selection-section');
+            } else {
+                alert("ID tidak dijumpai. Sila pastikan anda memasukkan ID yang betul.");
+            }
+        }
+
+        function logout() {
+            currentTeacher = null;
+            document.getElementById('teacher-id').value = "";
+            showSection('login-section');
+        }
+
+        async function loadStudents() {
+            selectedClassSub = document.getElementById('subject-class-select').value;
+            document.getElementById('current-class-title').innerText = selectedClassSub;
+            
+            // Extract Form level and Class Name
+            let match = selectedClassSub.match(/([1-5])[A-Z0-9]+/);
+            if(!match) { alert("Format kelas tidak dapat dikesan."); return; }
+            
+            let formLevel = match[1];
+            let className = match[0];
+            let subjectName = selectedClassSub.replace(className, "").trim();
+
+            showSection('entry-section');
+            document.getElementById('loading-students').style.display = "block";
+            document.getElementById('student-list').innerHTML = "";
+
+            try {
+                const response = await fetch(CSV_LINKS[formLevel]);
+                const text = await response.text();
+                parseCSVAndRender(text, className, formLevel, subjectName);
+            } catch (err) {
+                alert("Ralat memuat turun data pelajar: " + err.message);
+            } finally {
+                document.getElementById('loading-students').style.display = "none";
+            }
+        }
+
+        function parseCSVAndRender(csv, targetClass, formLevel, subjectName) {
+            const rows = csv.split('\n');
+            currentStudents = [];
+            
+            // Assumes Column C (index 2) is Name, Column D (index 3) is Class based on "MASTER" sheet logic
+            for(let i=1; i<rows.length; i++) {
+                let cols = rows[i].split(',');
+                if(cols.length >= 4) {
+                    let name = cols[2].replace(/"/g, '').trim();
+                    let kelas = cols[3].replace(/"/g, '').trim();
+                    
+                    if(kelas === targetClass) {
+                        currentStudents.push({name: name, mark: '', grade: ''});
+                    }
+                }
+            }
+
+            if(currentStudents.length === 0) {
+                document.getElementById('student-list').innerHTML = "<p style='text-align:center;'>Tiada pelajar dijumpai untuk kelas ini.</p>";
+                return;
+            }
+
+            renderStudentList(formLevel);
+        }
+
+        function renderStudentList(formLevel) {
+            const listDiv = document.getElementById('student-list');
+            listDiv.innerHTML = "";
+
+            currentStudents.forEach((stud, index) => {
+                const row = document.createElement('div');
+                row.className = "student-row";
+                
+                const nameDiv = document.createElement('div');
+                nameDiv.className = "student-name";
+                nameDiv.innerText = `${index + 1}. ${stud.name}`;
+
+                const inputsDiv = document.createElement('div');
+                inputsDiv.className = "grid-inputs";
+                inputsDiv.style.display = "contents";
+
+                const markInput = document.createElement('input');
+                markInput.type = "text";
+                markInput.className = "mark-input";
+                markInput.placeholder = "Markah";
+                markInput.dataset.index = index;
+                
+                // Get existing data from localstorage if any
+                let saved = getFromLocalStorage(stud.name, selectedClassSub);
+                if(saved) {
+                    markInput.value = saved.mark;
+                    stud.mark = saved.mark;
+                    stud.grade = saved.grade;
+                }
+
+                const gradeDiv = document.createElement('div');
+                gradeDiv.className = "grade-indicator";
+                gradeDiv.id = `grade-${index}`;
+                gradeDiv.innerText = stud.grade || "-";
+
+                // Auto calculate grade on input
+                markInput.addEventListener('input', function(e) {
+                    let val = this.value.toUpperCase();
+                    if(val === 'TH') {
+                        stud.mark = 'TH';
+                        stud.grade = 'TH';
+                    } else if (!isNaN(val) && val !== '') {
+                        stud.mark = val;
+                        stud.grade = calculateGrade(val, formLevel);
+                    } else {
+                        stud.mark = '';
+                        stud.grade = '-';
+                    }
+                    gradeDiv.innerText = stud.grade;
+                });
+
+                // Enter Key Jump Next
+                markInput.addEventListener('keydown', function(e) {
+                    if(e.key === 'Enter') {
+                        e.preventDefault();
+                        let nextInput = document.querySelector(`input[data-index="${index + 1}"]`);
+                        if(nextInput) nextInput.focus();
+                    }
+                });
+
+                const thBtn = document.createElement('button');
+                thBtn.className = "th-btn";
+                thBtn.innerText = "TH";
+                thBtn.onclick = function() {
+                    markInput.value = 'TH';
+                    stud.mark = 'TH';
+                    stud.grade = 'TH';
+                    gradeDiv.innerText = 'TH';
+                };
+
+                if (window.innerWidth <= 600) {
+                    let mobileGroup = document.createElement('div');
+                    mobileGroup.className = "grid-inputs";
+                    mobileGroup.appendChild(markInput);
+                    mobileGroup.appendChild(gradeDiv);
+                    mobileGroup.appendChild(thBtn);
+                    row.appendChild(nameDiv);
+                    row.appendChild(mobileGroup);
+                } else {
+                    row.appendChild(nameDiv);
+                    row.appendChild(markInput);
+                    row.appendChild(gradeDiv);
+                    row.appendChild(thBtn);
+                }
+                
+                listDiv.appendChild(row);
+            });
+        }
+
+        function calculateGrade(markStr, formLevel) {
+            let mark = parseFloat(markStr);
+            if(formLevel == 4 || formLevel == 5) {
+                if(mark >= 90) return 'A+';
+                if(mark >= 80) return 'A';
+                if(mark >= 70) return 'A-';
+                if(mark >= 65) return 'B+';
+                if(mark >= 60) return 'B';
+                if(mark >= 55) return 'C+';
+                if(mark >= 50) return 'C';
+                if(mark >= 45) return 'D';
+                if(mark >= 40) return 'E';
+                return 'G';
+            } else {
+                if(mark >= 82) return 'A';
+                if(mark >= 66) return 'B';
+                if(mark >= 50) return 'C';
+                if(mark >= 35) return 'D';
+                if(mark >= 20) return 'E';
+                return 'F';
+            }
+        }
+
+        // Local Storage & Dashboard Functions
+        function getFromLocalStorage(name, classSub) {
+            let data = JSON.parse(localStorage.getItem('portal_markah_smkselirik')) || [];
+            return data.find(d => d.name === name && d.classSub === classSub);
+        }
+
+        function saveToLocalStorage(records) {
+            let data = JSON.parse(localStorage.getItem('portal_markah_smkselirik')) || [];
+            records.forEach(r => {
+                let idx = data.findIndex(d => d.name === r.name && d.classSub === r.classSub);
+                if(idx > -1) {
+                    data[idx] = r;
+                } else {
+                    data.push(r);
+                }
+            });
+            localStorage.setItem('portal_markah_smkselirik', JSON.stringify(data));
+        }
+
+        function showDashboard() {
+            prevSection = document.querySelector('.card.active').id;
+            let data = JSON.parse(localStorage.getItem('portal_markah_smkselirik')) || [];
+            const tbody = document.querySelector('#dashboard-table tbody');
+            tbody.innerHTML = "";
+
+            if(data.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='6'>Tiada rekod dijumpai.</td></tr>";
+            } else {
+                // Filter data to only show for current logged in teacher's subjects
+                let teacherSubs = currentTeacher ? currentTeacher.subjects : [];
+                data.filter(d => teacherSubs.includes(d.classSub)).forEach((r, idx) => {
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${r.name}</td>
+                        <td>${r.classSub.split(' ').pop()}</td>
+                        <td>${r.classSub.replace(r.classSub.split(' ').pop(), '')}</td>
+                        <td>${r.mark}</td>
+                        <td>${r.grade}</td>
+                        <td>
+                            <button class="btn-danger" style="padding: 5px; font-size:12px;" onclick="deleteRecord('${r.name}', '${r.classSub}')">Hapus</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            showSection('dashboard-section');
+        }
+
+        function deleteRecord(name, classSub) {
+            if(confirm(`Adakah anda pasti untuk menghapus rekod ${name}?`)) {
+                let data = JSON.parse(localStorage.getItem('portal_markah_smkselirik')) || [];
+                data = data.filter(d => !(d.name === name && d.classSub === classSub));
+                localStorage.setItem('portal_markah_smkselirik', JSON.stringify(data));
+                
+                // Note: Implementasi Hapus ke Google Sheet memerlukan Google Apps Script endpoint DELETE.
+                // Untuk simulasi ini kita hapuskan dari local storage
+                showDashboard();
+                alert('Rekod dihapus dari local storage.');
+            }
+        }
+
+        // Simpan & Hantar ke Pangkalan Data
+        async function saveAndSend() {
+            let match = selectedClassSub.match(/([1-5])[A-Z0-9]+/);
+            let formLevel = match[1];
+            let className = match[0];
+            let subjectName = selectedClassSub.replace(className, "").trim();
+
+            let targetCol = formLevel > 3 ? COL_MAP_F45[subjectName] : COL_MAP_F13[subjectName];
+            
+            if(!targetCol) {
+                alert("Ralat: Kolum untuk subjek tidak ditemui dalam konfigurasi.");
+                return;
+            }
+
+            // Get Grade column (usually the character after the target column, simple ascii manipulation)
+            let gradeCol = getNextColumn(targetCol);
+
+            let recordsToSave = [];
+            let payloadData = [];
+
+            currentStudents.forEach(s => {
+                if(s.mark !== '') {
+                    recordsToSave.push({
+                        name: s.name,
+                        mark: s.mark,
+                        grade: s.grade,
+                        classSub: selectedClassSub
+                    });
+                    
+                    payloadData.push({
+                        name: s.name,
+                        mark: s.mark,
+                        grade: s.grade
+                    });
+                }
+            });
+
+            if(recordsToSave.length === 0) {
+                alert("Sila masukkan sekurang-kurangnya satu markah sebelum simpan.");
+                return;
+            }
+
+            // 1. Save to LocalStorage
+            saveToLocalStorage(recordsToSave);
+            
+            // 2. Send to Google Apps Script
+            const scriptURL = APPS_SCRIPT_LINKS[formLevel];
+            let payload = {
+                action: "updateMarks",
+                className: className,
+                markCol: targetCol,
+                gradeCol: gradeCol,
+                data: JSON.stringify(payloadData)
+            };
+
+            // Convert to URL params to send as POST with no-cors or JSON 
+            // In typical GAS forms, URLSearchParams works best
+            let formBody = [];
+            for (let property in payload) {
+                let encodedKey = encodeURIComponent(property);
+                let encodedValue = encodeURIComponent(payload[property]);
+                formBody.push(encodedKey + "=" + encodedValue);
+            }
+            formBody = formBody.join("&");
+
+            try {
+                // Notis: Menggunakan mode 'no-cors' memandangkan polisi CORS pada GAS Web Apps
+                fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: formBody
+                });
+                alert("Data telah berjaya disimpan dan dihantar ke pangkalan data!");
+                showDashboard();
+            } catch (err) {
+                alert("Data disimpan ke local storage, tetapi gagal dihantar ke Server: " + err.message);
+            }
+        }
+
+        function getNextColumn(colStr) {
+            let lastChar = colStr.slice(-1);
+            let prefix = colStr.slice(0, -1);
+            if (lastChar === 'Z') {
+                return prefix ? prefix + 'A' : 'AA'; // Simple logic untuk next column jika ia Z
+            }
+            return prefix + String.fromCharCode(lastChar.charCodeAt(0) + 1);
+        }
+
+    </script>
+</body>
+</html>
