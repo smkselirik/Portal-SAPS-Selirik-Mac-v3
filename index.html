@@ -27,20 +27,53 @@
             flex-direction: column;
         }
 
-        /* Header with purely Night Blue and elegant abstract golden pattern */
+       /* Header with purely Night Blue and striking abstract golden pattern */
         header {
-            background-color: var(--royal-blue);
+            background-color: var(--night-blue);
+            /* Kombinasi garisan geometri emas dan silauan (glow) abstrak */
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.2) 0%, transparent 50%),
-                repeating-linear-gradient(45deg, rgba(212, 175, 55, 0.05) 0%, rgba(212, 175, 55, 0.05) 2px, transparent 2px, transparent 15px);
+                linear-gradient(135deg, transparent 15%, rgba(212, 175, 55, 0.5) 20%, rgba(212, 175, 55, 0.1) 22%, transparent 28%),
+                linear-gradient(45deg, transparent 75%, rgba(212, 175, 55, 0.7) 80%, transparent 85%),
+                radial-gradient(circle at 10% 20%, rgba(212, 175, 55, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 90% 80%, rgba(212, 175, 55, 0.45) 0%, transparent 50%);
             color: var(--white);
-            padding: 25px 20px;
             text-align: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            border-bottom: 4px solid var(--gold);
+            padding: 30px 20px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
             position: relative;
+            overflow: hidden;
+            border-bottom: 4px solid var(--gold); /* Garisan kemasan emas di sempadan bawah */
+        }
 
+        header img {
+            width: 110px;
+            height: auto;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.4)); /* Memberi efek timbul pada logo */
+        }
+
+        header h1 {
+            margin: 0 0 5px;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--gold);
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5); /* Teks lebih jelas */
+            position: relative;
+            z-index: 2;
+        }
+
+        header .portal-title {
+            margin: 5px 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--white);
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+            position: relative;
+            z-index: 2;
         }
 
         header img {
@@ -227,12 +260,12 @@
 </head>
 <body>
 
-    <header>
+   <header>
         <img src="https://i.ibb.co/VYSKMXf1/Logo-Selirik.png" alt="Logo SMK Selirik">
         <h1>SMK SELIRIK, KAPIT</h1>
-        <p>Peperiksaan Pertengahan 1 (Mac) - Tahun 2026</p>
+        <div class="portal-title">Portal Markah Peperiksaan Pertengahan Penggal 1 (Mac) 2026</div>
     </header>
-
+    
     <div class="container">
         <div id="login-section" class="card active">
             <h3 style="color: var(--night-blue); text-align: center;">Log Masuk Guru</h3>
